@@ -22,14 +22,15 @@ dotsDelta := (b-a)/N:
 xdots := seq(dotsDelta * x, x = 0 .. N):
 ydots := seq(y(x), x in xdots):
 
+# Опорные точки
+numSeq := seq(k, k = 0..(N - 1)):
+
 printf("Исходный график после дискретизации");
-plot([xdots], [ydots]);
+plot([numSeq], [ydots]);
 
 # Глобальный счетчик итераций
 globalCounterSum := 0:
 globalCounterMul := 0:
-
-numSeq := seq(k, k = 0..(N - 1)):
 
 # Made by AJIOB
 printf("## Дискретное преобразование Фурье\n");
@@ -39,10 +40,15 @@ universalFunction := (k, sequence, WSignPower) -> simplify(1/N * sum(sequence[m+
 complexSignalFunc := k -> universalFunction(k, [ydots], 0):
 yComplexDots := seq(complexSignalFunc(k), k in numSeq):
 
-yComplexAmplitudes := seq(abs(d), d in yComplexDots):
-
 printf("# Амплитудно-частотный спектр\n");
+yComplexAmplitudes := seq(abs(d), d in yComplexDots):
 plot([numSeq], [yComplexAmplitudes]);
 
 printf("# Фазо-частотный спектр\n");
-#plot([numSeq], [yComplexDots]);
+yComplexAngles := seq(argument(d), d in yComplexDots):
+plot([numSeq], [yComplexAngles]);
+
+printf("# Восстановленный сигнал\n");
+recoveredSignalFunc := k -> universalFunction(k, [yComplexDots], 1):
+yRecoveredDots := seq(Re(recoveredSignalFunc(k)), k in numSeq):
+plot([numSeq], [yRecoveredDots]);
