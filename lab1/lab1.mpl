@@ -63,36 +63,36 @@ prName := proc (arr, k)::Array;
   return prName([op(arr), seq(k + i, i in arr)], k / 2);
 end proc:
 
+#БПФ с прореживанием по частоте
+butterfly := proc (arr, n, dir)::Array; 
+  local w := 1;
+  local Wn := exp(((-1) ^ dir) *2 * I * Pi / n); 
+  local b := []; 
+  local c := []; 
+  local i;
+  if nops(arr) < 2 then
+    return arr;
+  end if;
+  for i from 1 by 1 to (n/2) do 
+    b := [op(b), arr[i]+arr[i+(n/2)]]; 
+    c := [op(c), (arr[i]-arr[i+(n/2)])*w]; 
+    w := w*Wn; 
+  end do; 
+  return [op(butterfly(b, n / 2, dir)), op(butterfly(c, n / 2, dir))];
+end proc:
+
+yFFTComplexDotsTemp := butterfly([ydots], N, 0):
+yFFTComplexDots := seq(yFFTComplexDotsTemp[i + 1], i in prName([0], N/2)):
 
 printf("# Амплитудно-частотный спектр\n");
-#yComplexAmplitudes := seq(abs(d), d in yComplexDots):
-#plot([numSeq], [yComplexAmplitudes]);
+yFFTComplexAmplitudes := seq(abs(d), d in yFFTComplexDots):
+plot([numSeq], [yFFTComplexAmplitudes]);
 
-#БПФ с прореживанием по частоте
-butterfly := proc (n, arr)::Array; 
-      local w, Wn, b, c, aB, aC, arr1, arr2, i; 
-     w := 1; 
-     Wn := exp((I*2)*Pi/N); 
-     b := 0; 
-     c := 0; 
-      aB := []; 
-      aC := []; 
-      arr1 := []; 
-     arr2 := []; 
-     for i to (1/2)*n do 
-           b := arr[i]+arr[i+(1/2)*n]; 
-        aB := [op(aB), b]; 
-        c := (arr[i]-arr[i+(1/2)*n])*w; 
-        aC := [op(aC), c]; 
-        w := w*Wn; 
-      end do; 
+printf("# Фазо-частотный спектр\n");
+yFFTComplexAngles := seq(argument(d), d in yFFTComplexDots):
+plot([numSeq], [yFFTComplexAngles]);
 
-      if (1/2)*n = 1 then 
-        arr1 := aB; 
-        arr2 := aC; 
-      else 
-        arr1 := butterfly((1/2)*n, aB); 
-        arr2 := butterfly((1/2)*n, aC); 
-      end if; 
-      return [op(arr1), op(arr2)];
-end proc;
+printf("# Восстановленный сигнал\n");
+yFFTRecoveredDotsTemp := butterfly([yFFTComplexDots], N, 1):
+yFFTRecoveredDots := seq(Re(yFFTRecoveredDotsTemp[i + 1]), i in prName([0], N/2)):
+plot([numSeq], [yFFTRecoveredDots]);
