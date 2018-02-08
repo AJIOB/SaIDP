@@ -60,7 +60,7 @@ prName := proc (k, arr)::Array;
 	local arr1, arrTemp; 
 	arr1 := arr; 
 	arrTemp := Array([op(arr)]);
-  local i := 0;
+  local i;
   local retArr := Array([]);
 	if k < 1 then 
 		retArr := arr1 
