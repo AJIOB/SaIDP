@@ -57,7 +57,9 @@ plot([numSeq], [yRecoveredDots]);
 prName := proc (k, arr)::Array; 
 	local arr1, arrTemp; 
 	arr1 := arr; 
-	arrTemp := Array([op(arr)]); 
+	arrTemp := Array([op(arr)]);
+  local i := 0;
+  local retArr := Array([]);
 	if k < 1 then 
 		retArr := arr1 
 	else 
@@ -71,7 +73,7 @@ end proc;
 
 #БПФ с прореживанием по частоте
 butterfly := proc (n, arr)::Array; 
-  	local w, Wn, b, c, aB, aC, arr1, arr2; 
+  	local w, Wn, b, c, aB, aC, arr1, arr2, i; 
  	w := 1; 
  	Wn := exp((I*2)*Pi/N); 
  	b := 0; 
