@@ -52,3 +52,48 @@ printf("# Восстановленный сигнал\n");
 recoveredSignalFunc := k -> universalFunction(k, [yComplexDots], 1):
 yRecoveredDots := seq(Re(recoveredSignalFunc(k)), k in numSeq):
 plot([numSeq], [yRecoveredDots]);
+
+#Генерит индексы
+prName := proc (k, arr)::Array; 
+	local arr1, arrTemp; 
+	arr1 := arr; 
+	arrTemp := Array([op(arr)]); 
+	if k < 1 then 
+		retArr := arr1 
+	else 
+		for i to ArrayNumElems(arrTemp) do 
+			arr1[i] := arr1[i]+k 
+		end do; 
+		retArr := prName((1/2)*k, [op(arr), op(arr1)]) 
+	end if; 
+	return retArr 
+end proc;
+
+#БПФ с прореживанием по частоте
+butterfly := proc (n, arr)::Array; 
+  	local w, Wn, b, c, aB, aC, arr1, arr2; 
+ 	w := 1; 
+ 	Wn := exp((I*2)*Pi/N); 
+ 	b := 0; 
+ 	c := 0; 
+  	aB := []; 
+  	aC := []; 
+  	arr1 := []; 
+ 	arr2 := []; 
+ 	for i to (1/2)*n do 
+   		b := arr[i]+arr[i+(1/2)*n]; 
+    	aB := [op(aB), b]; 
+    	c := (arr[i]-arr[i+(1/2)*n])*w; 
+    	aC := [op(aC), c]; 
+    	w := w*Wn; 
+  	end do; 
+
+  	if (1/2)*n = 1 then 
+    	arr1 := aB; 
+    	arr2 := aC; 
+  	else 
+    	arr1 := butterfly((1/2)*n, aB); 
+    	arr2 := butterfly((1/2)*n, aC); 
+  	end if; 
+  	return [op(arr1), op(arr2)];
+end proc;
