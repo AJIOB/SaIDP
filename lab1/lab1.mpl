@@ -35,9 +35,9 @@ globalCounterMul := 0:
 # Made by AJIOB
 printf("## Дискретное преобразование Фурье\n");
 
-universalFunction := (k, sequence, WSignPower) -> simplify(1/N * sum(sequence[m+1]*W^(k * m * (-1)^WSignPower), m = 0 .. N-1)):
+universalFunction := (k, sequence, WSignPower) -> simplify(sum(sequence[m+1]*W^(k * m * (-1)^WSignPower), m = 0 .. N-1)):
 
-complexSignalFunc := k -> universalFunction(k, [ydots], 0):
+complexSignalFunc := k -> (universalFunction(k, [ydots], 0) / N):
 yComplexDots := seq(complexSignalFunc(k), k in numSeq):
 
 printf("# Амплитудно-частотный спектр\n");
@@ -52,6 +52,8 @@ printf("# Восстановленный сигнал\n");
 recoveredSignalFunc := k -> universalFunction(k, [yComplexDots], 1):
 yRecoveredDots := seq(Re(recoveredSignalFunc(k)), k in numSeq):
 plot([numSeq], [yRecoveredDots]);
+
+printf("## Быстрое преобразование Фурье\n");
 
 #Генерит индексы
 prName := proc (k, arr)::Array; 
