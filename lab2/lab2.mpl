@@ -59,11 +59,38 @@ butterfly := proc (arr, n, dir)::Array;
 end proc:
 
 FFT_custom := proc (arr)::Array;
-  local buff := butterfly(arr, nops(arr), 0);
+  local buff := simplify(butterfly(arr, nops(arr), 0));
   return [seq(buff[i + 1] / N, i in prName([0], nops(arr)/2))]:
 end proc:
 
 FFT_custom_inverse := proc (arr)::Array;
-  local buff := butterfly(arr, nops(arr), 1);
+  local buff := simplify(butterfly(arr, nops(arr), 1));
   return [seq(buff[i + 1], i in prName([0], nops(arr)/2))]:
 end proc:
+
+#Made by AJIOB
+printf("Свертка через БПФ");
+
+C_y_FFT := FFT_custom([ydots]):
+C_z_FFT := FFT_custom([zdots]):
+
+C_res_FFT := [seq(C_y_FFT[i + 1]*C_z_FFT[i + 1], i in numSeq)]:
+C_new_res_FFT := FFT_custom_inverse(C_res_FFT):
+
+plot([numSeq], [seq(Re(i), i in C_new_res_FFT)]);
+
+printf("Свертка через стандартную формулу");
+
+# TODO Ivanushka
+
+printf("Корреляция через БПФ");
+
+C_res_corr_FFT := [seq(conjugate(C_y_FFT[i + 1])*C_z_FFT[i + 1], i in numSeq)]:
+C_new_res_corr_FFT := FFT_custom_inverse(C_res_corr_FFT):
+
+plot([numSeq], [seq(Re(i), i in C_new_res_corr_FFT)]);
+
+
+printf("Корреляция через стандартную формулу");
+
+# TODO Ivanushka
