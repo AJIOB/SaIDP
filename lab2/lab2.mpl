@@ -58,15 +58,14 @@ butterfly := proc (arr, n, dir)::Array;
   return [op(butterfly(b, n / 2, dir)), op(butterfly(c, n / 2, dir))];
 end proc:
 
-FFT_custom := proc (arr)::Array;
-  local buff := simplify(butterfly(arr, nops(arr), 0));
-  return [seq(buff[i + 1] / N, i in prName([0], nops(arr)/2))]:
+bf_modified := proc (arr, dir)::Array;
+  local buff := simplify(butterfly(arr, nops(arr), dir));
+  return [seq(buff[i + 1] / sqrt(nops(arr)), i in prName([0], nops(arr)/2))]:
 end proc:
 
-FFT_custom_inverse := proc (arr)::Array;
-  local buff := simplify(butterfly(arr, nops(arr), 1));
-  return [seq(buff[i + 1], i in prName([0], nops(arr)/2))]:
-end proc:
+FFT_custom := arr -> bf_modified(arr, 0):
+
+FFT_custom_inverse := arr -> bf_modified(arr, 1):
 
 #Made by AJIOB
 printf("Свертка через БПФ");
