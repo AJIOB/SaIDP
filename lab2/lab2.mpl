@@ -76,9 +76,24 @@ C_z_FFT := FFT_custom([zdots]):
 C_res_FFT := [seq(C_y_FFT[i + 1]*C_z_FFT[i + 1], i in numSeq)]:
 C_new_res_FFT := FFT_custom_inverse(C_res_FFT):
 
-plot([numSeq], [seq(Re(i), i in C_new_res_FFT)]);
+plot([numSeq], [seq(evalf(Re(i)), i in C_new_res_FFT)]);
 
 printf("Свертка через стандартную формулу");
+
+Z_simple_proc := proc(m)::double;
+  local sum_local, h;
+  global N;
+  sum_local := 0;
+  for h from 0 to (N-1) by 1 do
+    sum_local := sum_local + ydots[h + 1] * zdots[((m - h) mod N) + 1];
+  end do;
+  return (sum_local / N);
+end proc:
+
+Z_simple := seq(Z_simple_proc(i), i in numSeq):
+plot([numSeq], [Z_simple]);
+
+#Z_simple_fun := m -> (sum((ydots[h + 1] * zdots[((m - h) mod N) + 1]), h = 0..(N - 1))/N):
 
 # TODO Ivanushka
 
@@ -87,7 +102,7 @@ printf("Корреляция через БПФ");
 C_res_corr_FFT := [seq(conjugate(C_y_FFT[i + 1])*C_z_FFT[i + 1], i in numSeq)]:
 C_new_res_corr_FFT := FFT_custom_inverse(C_res_corr_FFT):
 
-plot([numSeq], [seq(Re(i), i in C_new_res_corr_FFT)]);
+plot([numSeq], [seq(evalf(Re(i)), i in C_new_res_corr_FFT)]);
 
 
 printf("Корреляция через стандартную формулу");
