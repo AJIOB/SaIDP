@@ -108,3 +108,16 @@ plot([numSeq], [seq(evalf(Re(i)), i in C_new_res_corr_FFT)]);
 printf("Корреляция через стандартную формулу");
 
 # TODO Ivanushka
+
+Z_simple_proc11 := proc(m)::double;
+  local sum_local, h;
+  global N;
+  sum_local := 0;
+  for h from 0 to (N-1) by 1 do
+    sum_local := sum_local + ydots[h + 1] * zdots[((m + h) mod N) + 1];
+  end do;
+  return (sum_local / N);
+end proc:
+
+Z_simple11 := seq(Z_simple_proc11(i), i in numSeq):
+plot([numSeq], [Z_simple11]);
