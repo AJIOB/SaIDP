@@ -18,17 +18,22 @@ T <- 2 * pi
 a <- 0
 b <- a + T
 
+# 
+custom_seq_interval = function(from, before, num_intervals){
+  res <- seq(from, before, length.out = (num_intervals + 1))
+  res[-length(res)]
+}
+
 # basic function
 basic_xdots <- seq(a, b, by = 0.01)
 basic_ydots <- y(basic_xdots)
 custom_plot(basic_xdots, basic_ydots, "Basic function")
 
 #discrete basic function
-xdots <- seq(0, N - 1, by = 1)
-basic_xdots <- seq(a, b, length.out = (N + 1))
-basic_xdots <- basic_xdots[ basic_xdots < b]
+normilized_xdots <- custom_seq_interval(0, 1, N)
+basic_xdots <- custom_seq_interval(a, b, N)
 basic_ydots <- y(basic_xdots)
-custom_plot(xdots, basic_ydots, "Discrete basic function")
+custom_plot(normilized_xdots, basic_ydots, "Discrete basic function")
 
 #custom sign
 custom_sign <- function(num) {
