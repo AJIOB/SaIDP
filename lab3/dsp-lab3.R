@@ -30,11 +30,14 @@ custom_plot(basic_xdots, basic_ydots, "Discrete basic function")
 
 #custom sign
 custom_sign <- function(num) {
-  return ((sign(num) > 0) ? 1 : (-1))
+  return (if (sign(num) > 0) 1 else (-1))
 }
 
 #rademacher function
 r <- function(k, t) {
   if (t < 0 || t >= 1)
+  {
+    stop("t must be in interval [0; 1)")
+  }
   return (custom_sign(sin((2 ^ k) * pi * t)))
 }
