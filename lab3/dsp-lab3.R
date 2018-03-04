@@ -30,10 +30,9 @@ basic_ydots <- y(basic_xdots)
 custom_plot(basic_xdots, basic_ydots, "Basic function")
 
 #discrete basic function
-normilized_xdots <- custom_seq_interval(0, 1, N)
 basic_xdots <- custom_seq_interval(a, b, N)
 basic_ydots <- y(basic_xdots)
-custom_plot(normilized_xdots, basic_ydots, "Discrete basic function")
+custom_plot(basic_xdots, basic_ydots, "Discrete basic function")
 
 #custom sign
 custom_sign <- function(num) {
@@ -121,6 +120,22 @@ FWT <- function(dots, size) {
   }
 }
 
-res <- FWT(basic_ydots, N)
-custom_plot(basic_xdots, res, "FWT")
+fwt_ydots <- FWT(basic_ydots, N)
+custom_plot(basic_xdots, fwt_ydots, "FWT")
 
+# FWT (Walsh-Hadamard) to DWT converter
+index_FWT_to_DWT <- function(n, curr = c(0)) {
+  if (n < 2) {
+    curr
+  }
+  else {
+    n <- n / 2
+    index_FWT_to_DWT(n, c(curr, rev(curr + n)))
+  }
+}
+
+custom_sort <- function(dots) {
+  dots[index_FWT_to_DWT(length(dots)) + 1]
+}
+
+custom_plot(basic_xdots, custom_sort(fwt_ydots), "FWT on DWT pos")
