@@ -37,7 +37,7 @@ custom_plot(normilized_xdots, basic_ydots, "Discrete basic function")
 
 #custom sign
 custom_sign <- function(num) {
-  return (if (sign(num) > 0) 1 else (-1))
+  ifelse(num > 0, 1, -1)
 }
 
 #Rademacher function
@@ -69,8 +69,30 @@ wal <- function(n, t, r_num) {
   res
 }
 
-#Test (temp)
-wal(6, 0.9, 3)
+custom_is_integer <- function(x) {
+  x %% 1 == 0
+}
+
+#Discrete Walsh Transform block
+normilized_wal <- function(n, i, N){
+  wal(n, (i + 0.5)/N, log2(N))
+}
+
+DWT_one <- function(dots, i) {
+  size <- length(dots)
+  normilized_wal(i, seq(0, size - 1, by = 1), size)
+}
+
+#Discrete Walsh Transform
+DWT <- function(dots) {
+  size <- length(dots)
+  r_num <- log2(size)
+  if (!custom_is_integer(r_num)) {
+    stop("Size must be an integer power of 2")
+  }
+  
+  DWT_one(dots, seq(0, size - 1, by = 1))
+}
 
 # Fast Walsh Transform
 FWT_help <- function(dots, i, pow, delta) {
