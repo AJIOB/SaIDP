@@ -100,6 +100,10 @@ DWT <- function(dots) {
 dwt_ydots <- DWT(basic_ydots)
 custom_plot(basic_xdots, dwt_ydots, "DWT")
 
+#Inversed DWT
+dwt_new_ydots <- DWT(dwt_ydots)
+custom_plot(basic_xdots, dwt_new_ydots, "DWT restored function")
+
 # Fast Walsh Transform
 FWT_help <- function(dots, i, pow, delta) {
   dots[i] + ((-1) ^ pow) * dots[i + delta]
@@ -138,4 +142,8 @@ custom_sort <- function(dots) {
   dots[index_FWT_to_DWT(length(dots)) + 1]
 }
 
-custom_plot(basic_xdots, custom_sort(fwt_ydots), "FWT on DWT pos")
+custom_plot(basic_xdots, custom_sort(fwt_ydots), "FWT on DWT positions (resorting)")
+
+#Inversed FWT
+fwt_new_ydots <- FWT(fwt_ydots, N)
+custom_plot(basic_xdots, fwt_new_ydots, "FWT restored function")
