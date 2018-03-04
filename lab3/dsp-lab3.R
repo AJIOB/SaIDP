@@ -73,7 +73,7 @@ wal <- function(n, t, r_num) {
 wal(6, 0.9, 3)
 
 FWT <- function(dots, size) {
-  if (size >= 4) {
+  if (size >= 2) {
     indexes <- seq(1, size / 2, by = 1)
     
     seq1 <- c()
@@ -90,5 +90,14 @@ FWT <- function(dots, size) {
   }
 }
 
+divideBy8 <- function(dots, size) {
+  fwt_y <- c()
+  for (i in seq(1, N, by = 1)) {
+    fwt_y <- c(fwt_y, (dots[i] / 8))
+  }
+  fwt_y
+} 
+
 res <- FWT(basic_ydots, N)
-custom_plot(basic_xdots, res, "FWT")
+custom_plot(basic_xdots, divideBy8(res, N), "FWT")
+
