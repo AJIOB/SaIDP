@@ -71,3 +71,24 @@ wal <- function(n, t, r_num) {
 
 #Test (temp)
 wal(6, 0.9, 3)
+
+FWT <- function(dots, size) {
+  if (size >= 4) {
+    indexes <- seq(1, size / 2, by = 1)
+    
+    seq1 <- c()
+    seq2 <- c()
+    
+    for(i in indexes) {
+      seq1 <- c(seq1, (dots[i + size / 2] + dots[i]))
+      seq2 <- c(seq2, (dots[i] - dots[i + size / 2]))
+    }
+    res <- c(FWT(seq1, size / 2), FWT(seq2, size / 2))
+    res
+  } else {
+    dots
+  }
+}
+
+res <- FWT(basic_ydots, N)
+custom_plot(basic_xdots, res, "FWT")
