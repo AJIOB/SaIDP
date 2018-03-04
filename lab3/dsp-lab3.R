@@ -72,6 +72,7 @@ wal <- function(n, t, r_num) {
 #Test (temp)
 wal(6, 0.9, 3)
 
+# Fast Walsh Transform
 FWT_help <- function(dots, i, pow, delta) {
   dots[i] + ((-1) ^ pow) * dots[i + delta]
 }
@@ -87,10 +88,10 @@ FWT <- function(dots, size) {
     seq1 <- FWT_help(dots, indexes, 0, size)
     seq2 <- FWT_help(dots, indexes, 1, size)
     
-    c(FWT(seq1, size), FWT(seq2, size))
+    c(FWT(seq1, size), FWT(seq2, size)) / sqrt(2)
   }
 }
 
 res <- FWT(basic_ydots, N)
-custom_plot(basic_xdots, res / 8, "FWT")
+custom_plot(basic_xdots, res, "FWT")
 
