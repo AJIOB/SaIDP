@@ -72,32 +72,25 @@ wal <- function(n, t, r_num) {
 #Test (temp)
 wal(6, 0.9, 3)
 
+FWT_help <- function(dots, i, pow, delta) {
+  dots[i] + ((-1) ^ pow) * dots[i + delta]
+}
+
 FWT <- function(dots, size) {
-  if (size >= 2) {
-    indexes <- seq(1, size / 2, by = 1)
-    
-    seq1 <- c()
-    seq2 <- c()
-    
-    for(i in indexes) {
-      seq1 <- c(seq1, (dots[i + size / 2] + dots[i]))
-      seq2 <- c(seq2, (dots[i] - dots[i + size / 2]))
-    }
-    res <- c(FWT(seq1, size / 2), FWT(seq2, size / 2))
-    res
-  } else {
+  size <- size / 2
+  if (size < 1) {
     dots
+  }
+  else {
+    indexes <- seq(1, size, by = 1)
+    
+    seq1 <- FWT_help(dots, indexes, 0, size)
+    seq2 <- FWT_help(dots, indexes, 1, size)
+    
+    c(FWT(seq1, size), FWT(seq2, size))
   }
 }
 
-divideBy8 <- function(dots, size) {
-  fwt_y <- c()
-  for (i in seq(1, N, by = 1)) {
-    fwt_y <- c(fwt_y, (dots[i] / 8))
-  }
-  fwt_y
-} 
-
 res <- FWT(basic_ydots, N)
-custom_plot(basic_xdots, divideBy8(res, N), "FWT")
+custom_plot(basic_xdots, res / 8, "FWT")
 
