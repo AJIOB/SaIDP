@@ -61,9 +61,7 @@ wal <- function(n, t, r_num) {
   
   for(k in seq(1, r_num, by = 1)) {
     # because array indexes from 1
-    if (xor(n_bin[r_num - k + 2], n_bin[r_num - k + 1])) {
-      res <- res * r(k, t)
-    }
+    res <- res * (r(k, t) ^ bitwXor(n_bin[r_num - k + 2], n_bin[r_num - k + 1]))
   }
   
   res
@@ -74,13 +72,15 @@ custom_is_integer <- function(x) {
 }
 
 #Discrete Walsh Transform block
+# i - non-normilized t value
 normilized_wal <- function(n, i, N){
   wal(n, (i + 0.5)/N, log2(N))
 }
 
+# i - walsh function number
 DWT_one <- function(dots, i) {
   size <- length(dots)
-  normilized_wal(i, seq(0, size - 1, by = 1), size)
+  sum(normilized_wal(i, seq(0, size - 1, by = 1), size) * dots) / sqrt(size)
 }
 
 #Discrete Walsh Transform
@@ -91,8 +91,15 @@ DWT <- function(dots) {
     stop("Size must be an integer power of 2")
   }
   
-  DWT_one(dots, seq(0, size - 1, by = 1))
+  buff <- c()
+  for (i in seq(0, size - 1, by = 1)) {
+    buff <- c(buff, DWT_one(dots, i))
+  }
+  buff
 }
+
+dwt_ydots <- DWT(basic_ydots)
+custom_plot(basic_xdots, dwt_ydots, "DWT")
 
 # Fast Walsh Transform
 FWT_help <- function(dots, i, pow, delta) {
