@@ -147,3 +147,4 @@ custom_plot(basic_xdots, custom_sort(fwt_ydots), "FWT on DWT positions (resortin
 #Inversed FWT
 fwt_new_ydots <- FWT(fwt_ydots, N)
 custom_plot(basic_xdots, fwt_new_ydots, "FWT restored function")
+
