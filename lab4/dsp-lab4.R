@@ -72,17 +72,24 @@ fft_butterfly <- function(arr, dir){
   w <- 1
   b <- NULL
   d <- NULL
-  Wn <- exp(((-1) ^ dir) *2 * I * pi / n)
+  Wn <- exp(((-1) ^ dir) *2 * i * pi / n)
   if (length(arr) < 2) {
     return(arr)
   }
   
-  for(i in seq(1, n/2, by = 1)) {
-    b <- c(b, arr[i]+arr[i+(n/2)]) 
-    d := c(d, (arr[i]-arr[i+(n/2)])*w)
+  for(index in seq(1, n/2, by = 1)) {
+    b <- c(b, arr[index]+arr[index+(n/2)]) 
+    d := c(d, (arr[index]-arr[index+(n/2)])*w)
     w <- w*Wn
   }
   
   c(fft_butterfly(b, n / 2, dir), fft_butterfly(d, n / 2, dir))
 }
-  
+
+custom_fft <- function(dots){
+  fft_butterfly(dots, 0)[sort_index_gen(c(0), length(dots) / 2) + 1]
+}
+
+custom_ifft <- function(idots){
+  fft_butterfly(idots, 1)[sort_index_gen(c(0), length(dots) / 2) + 1]
+}
