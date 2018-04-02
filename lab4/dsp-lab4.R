@@ -1,5 +1,7 @@
 # Made by IvAlex
 
+library("foreach")
+
 y <- function(x) {
   sin(3 * x) + cos(x)
 }
@@ -24,6 +26,10 @@ T <- 2 * pi
 a <- 0
 b <- a + T
 
+#ideal finite impulse responce filter borders
+left_filter_fir <- 2
+right_filter_fir <- 4
+
 # 
 custom_seq_interval = function(from, before, num_intervals){
   res <- seq(from, before, length.out = (num_intervals + 1))
@@ -37,6 +43,7 @@ custom_plot(basic_xdots, basic_ydots, "Basic function")
 
 #discrete basic function
 basic_xdots <- custom_seq_interval(a, b, N)
+basic_freq_xdots <- seq(0, N - 1)
 basic_ydots <- y(basic_xdots)
 custom_plot(basic_xdots, basic_ydots, "Discrete basic function")
 
@@ -96,8 +103,28 @@ custom_ifft <- function(idots){
   fft_butterfly(idots, 1)[sort_index_gen(c(0), N / 2) + 1]
 }
 
+# FIR Filter
+ideal_filter_resolver <- function(dot){
+  res <- foreach(x = dot) %dopar% {
+    if ((x >= left_filter_fir) & (x <= right_filter_fir)) {
+      1
+    }
+    else {
+      0
+    }
+  }
+  unlist(res)
+}
+
+## FIR ideal calcs
+fir_filter <- list(ideal = list(freq = ideal_filter_resolver(basic_freq_xdots)))
+fir_filter$ideal$time <- custom_ifft(fir_filter$ideal$freq)
+
+custom_freq_plot(basic_freq_xdots, Mod(fir_filter$ideal$freq), "FIR ideal frequency (Amplitude)")
+custom_plot(basic_xdots, Re(fir_filter$ideal$time), "FIR ideal timing")
+
 fft_ydots <- custom_fft(basic_ydots)
-custom_freq_plot(basic_xdots, Mod(fft_ydots), "FFT")
+#custom_freq_plot(basic_freq_xdots, Mod(fft_ydots), "FFT")
 
 ifft_ydots <- custom_ifft(fft_ydots)
-custom_plot(basic_xdots, Re(ifft_ydots), "Inversed FFT")
+#custom_plot(basic_xdots, Re(ifft_ydots), "Inversed FFT")
