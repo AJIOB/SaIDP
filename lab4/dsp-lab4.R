@@ -49,9 +49,40 @@ hidden_hamming_window_ <- function(n, N){
 # Hamming Window
 hamming_window <- function(dots){
   N <- length(dots)
-  res <- hidden_hamming_window_(dots, N)
+  res <- dots * hidden_hamming_window_(seq(0, N - 1), N)
   res
 }
 
 hamming_ydots <- hamming_window(basic_ydots)
 custom_plot(basic_xdots, hamming_ydots, "Discrete basic function after Hamming Window modification")
+
+#Fourier transform
+## Sorting indexes generator
+sort_index_gen <- function (arr, k){
+  if (k < 1) {
+    arr
+  } else {
+    sort_index_gen(c(arr, (k + arr)), k / 2);
+  }
+}
+  
+#БПФ с прореживанием по частоте
+fft_butterfly <- function(arr, dir){
+  n <- length(arr)
+  w <- 1
+  b <- NULL
+  d <- NULL
+  Wn <- exp(((-1) ^ dir) *2 * I * pi / n)
+  if (length(arr) < 2) {
+    return(arr)
+  }
+  
+  for(i in seq(1, n/2, by = 1)) {
+    b <- c(b, arr[i]+arr[i+(n/2)]) 
+    d := c(d, (arr[i]-arr[i+(n/2)])*w)
+    w <- w*Wn
+  }
+  
+  c(fft_butterfly(b, n / 2, dir), fft_butterfly(d, n / 2, dir))
+}
+  
