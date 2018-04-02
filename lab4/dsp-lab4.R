@@ -70,26 +70,34 @@ sort_index_gen <- function (arr, k){
 fft_butterfly <- function(arr, dir){
   n <- length(arr)
   w <- 1
-  b <- NULL
-  d <- NULL
-  Wn <- exp(((-1) ^ dir) *2 * i * pi / n)
+  left <- NULL
+  right <- NULL
+  Wn <- exp(((-1) ^ dir) *2 * 1i * pi / n)
   if (length(arr) < 2) {
     return(arr)
   }
   
   for(index in seq(1, n/2, by = 1)) {
-    b <- c(b, arr[index]+arr[index+(n/2)]) 
-    d := c(d, (arr[index]-arr[index+(n/2)])*w)
+    left <- c(left, arr[index]+arr[index+(n/2)]) 
+    right <- c(right, (arr[index]-arr[index+(n/2)])*w)
     w <- w*Wn
   }
   
-  c(fft_butterfly(b, n / 2, dir), fft_butterfly(d, n / 2, dir))
+  c(fft_butterfly(left, dir), fft_butterfly(right, dir))
 }
 
 custom_fft <- function(dots){
-  fft_butterfly(dots, 0)[sort_index_gen(c(0), length(dots) / 2) + 1]
+  N <- length(dots)
+  fft_butterfly(dots, 0)[sort_index_gen(c(0), N / 2) + 1]/N
 }
 
 custom_ifft <- function(idots){
-  fft_butterfly(idots, 1)[sort_index_gen(c(0), length(dots) / 2) + 1]
+  N <- length(idots)
+  fft_butterfly(idots, 1)[sort_index_gen(c(0), N / 2) + 1]
 }
+
+fft_ydots <- custom_fft(basic_ydots)
+custom_freq_plot(basic_xdots, Mod(fft_ydots), "FFT")
+
+ifft_ydots <- custom_ifft(fft_ydots)
+custom_plot(basic_xdots, Re(ifft_ydots), "Inversed FFT")
