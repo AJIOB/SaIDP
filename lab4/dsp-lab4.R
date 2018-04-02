@@ -55,13 +55,10 @@ hidden_hamming_window_ <- function(n, N){
 
 # Hamming Window
 hamming_window <- function(dots){
-  N <- length(dots)
-  res <- dots * hidden_hamming_window_(seq(0, N - 1), N)
+  N_local <- length(dots)
+  res <- dots * hidden_hamming_window_(seq(0, N_local - 1), N_local)
   res
 }
-
-hamming_ydots <- hamming_window(basic_ydots)
-custom_plot(basic_xdots, hamming_ydots, "Discrete basic function after Hamming Window modification")
 
 #Fourier transform
 ## Sorting indexes generator
@@ -132,6 +129,16 @@ custom_plot(basic_xdots, Re(fir_filter$ideal$time), "FIR ideal timing")
 
 ideal_conv_ydots <- custom_cyclic_convolution(basic_ydots, fir_filter$ideal$time)
 custom_plot(basic_xdots, Re(ideal_conv_ydots), "Ideal FIR signal convolution")
+
+## FIR window calcs
+fir_filter$real <- list(time = hamming_window(fir_filter$ideal$time))
+fir_filter$real$freq <- custom_fft(fir_filter$real$time)
+
+custom_freq_plot(basic_freq_xdots, Mod(fir_filter$real$freq), "FIR real frequency (Amplitude)")
+custom_plot(basic_xdots, Re(fir_filter$real$time), "FIR real timing")
+
+real_conv_ydots <- custom_cyclic_convolution(basic_ydots, fir_filter$real$time)
+custom_plot(basic_xdots, Re(real_conv_ydots), "Real FIR signal convolution")
 
 fft_ydots <- custom_fft(basic_ydots)
 #custom_freq_plot(basic_freq_xdots, Mod(fft_ydots), "FFT")
