@@ -3,7 +3,7 @@
 library("foreach")
 
 y <- function(x) {
-  sin(3 * x) + cos(x)
+  sin(3 * x) + cos(x) + sin(6 * x + 3)
 }
 
 custom_plot <- function(x, y, head_title) {
@@ -103,6 +103,13 @@ custom_ifft <- function(idots){
   fft_butterfly(idots, 1)[sort_index_gen(c(0), N / 2) + 1]
 }
 
+custom_cyclic_convolution <- function(y1_dots, y2_dots){
+  y1_idots <- custom_fft(y1_dots)
+  y2_idots <- custom_fft(y2_dots)
+  y_idots <- y1_idots * y2_idots
+  custom_ifft(y_idots)
+}
+
 # FIR Filter
 ideal_filter_resolver <- function(dot){
   res <- foreach(x = dot) %dopar% {
@@ -122,6 +129,9 @@ fir_filter$ideal$time <- custom_ifft(fir_filter$ideal$freq)
 
 custom_freq_plot(basic_freq_xdots, Mod(fir_filter$ideal$freq), "FIR ideal frequency (Amplitude)")
 custom_plot(basic_xdots, Re(fir_filter$ideal$time), "FIR ideal timing")
+
+ideal_conv_ydots <- custom_cyclic_convolution(basic_ydots, fir_filter$ideal$time)
+custom_plot(basic_xdots, Re(ideal_conv_ydots), "Ideal FIR signal convolution")
 
 fft_ydots <- custom_fft(basic_ydots)
 #custom_freq_plot(basic_freq_xdots, Mod(fft_ydots), "FFT")
