@@ -4,7 +4,7 @@ library("foreach")
 library("numbers")
 
 y <- function(x) {
-  sin(3 * x) + cos(x) + sin(6 * x + 3)
+  sin(3 * x) + cos(x) + sin(6 * x + 3) + 7
 }
 
 custom_plot <- function(x, y, head_title) {
@@ -53,7 +53,7 @@ basic_ydots <- y(basic_xdots)
 custom_plot(basic_xdots, basic_ydots, "Discrete basic function")
 
 hamming_a <- 25/46
-hamming_b <- 21/46
+hamming_b <- 1 - hamming_a
 hidden_hamming_window_ <- function(n, N){
   hamming_a - hamming_b * cos(2 * pi * (n - N / 2) / (N - 1))
 }
@@ -151,8 +151,31 @@ custom_plot(basic_xdots, Re(fir_filter$real$time), "FIR real timing")
 real_conv_ydots <- custom_cyclic_convolution(basic_ydots, fir_filter$real$time)
 custom_plot(basic_xdots, Re(real_conv_ydots), "Real FIR signal convolution")
 
-fft_ydots <- custom_fft(basic_ydots)
-#custom_freq_plot(basic_freq_xdots, Mod(fft_ydots), "FFT")
+iir_AJIOB <- function(){
+  iir_b1 <- 0.9
+  iir_a0 <- (1 + iir_b1) / 2
+  iir_a1 <- - iir_a0
+  iir_iter <- 10
+  
+  # IIR Filter
+  iir_resolver <- function(xdots, ydots_prev) {
+    ydots_prev <- rev(ydots_prev)
+    for(i in seq(1, length(xdots))){
+      x <- xdots[c(length(xdots), 1)]
+      y <- x[2] * iir_a0 + x[1] * iir_a1 + ydots_prev[1] * iir_b1
+      xdots <- c(xdots[-1], x[2])
+      ydots_prev <- c(y, ydots_prev)
+    }
+    rev(ydots_prev[seq(1, length(xdots))])
+  }
+  
+  res <- seq(1, length(basic_ydots)) * 0
+  for(i in seq(1, iir_iter)){
+    res <- iir_resolver(basic_ydots, res)
+  }
+  res
+}
 
-ifft_ydots <- custom_ifft(fft_ydots)
-#custom_plot(basic_xdots, Re(ifft_ydots), "Inversed FFT")
+AJIOB_iir_ydots <- iir_AJIOB()
+custom_plot(basic_xdots, AJIOB_iir_ydots, "IIR AJIOB")
+custom_freq_plot(basic_freq_xdots, Mod(custom_fft(AJIOB_iir_ydots)), "IIR Freq AJIOB")
