@@ -27,7 +27,7 @@ N <- 32
 T <- 2 * pi
 
 #Interval
-a <- 0
+a <- - T / 2
 b <- a + T
 
 #ideal finite impulse responce filter borders
@@ -36,8 +36,9 @@ right_filter_fir <- 9
 
 # 
 custom_seq_interval = function(from, before, num_intervals){
-  res <- seq(from, before, length.out = (num_intervals + 1))
-  res[-length(res)]
+  interval_prefix_len <- (before - from) / num_intervals
+  res <- seq(from + (interval_prefix_len / 2), before, by = interval_prefix_len)
+  res
 }
 
 # basic function
@@ -54,7 +55,7 @@ custom_plot(basic_xdots, basic_ydots, "Discrete basic function")
 hamming_a <- 25/46
 hamming_b <- 21/46
 hidden_hamming_window_ <- function(n, N){
-  hamming_a - hamming_b * cos(2 * pi * n / (N - 1))
+  hamming_a - hamming_b * cos(2 * pi * (n - N / 2) / (N - 1))
 }
 
 # Hamming Window
@@ -62,7 +63,7 @@ hamming_window <- function(dots){
   N_local <- length(dots)
   window_xdots <- seq(0, N_local - 1)
   window_ydots <- hidden_hamming_window_(window_xdots, N_local)
-  custom_plot(window_xdots, window_ydots, "Hamming window example")
+  custom_freq_plot(window_xdots, window_ydots, "Hamming window example")
   res <- dots * window_ydots
   res
 }
