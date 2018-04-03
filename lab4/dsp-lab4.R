@@ -31,8 +31,8 @@ a <- 0
 b <- a + T
 
 #ideal finite impulse responce filter borders
-left_filter_fir <- 2
-right_filter_fir <- 4
+left_filter_fir <- 3
+right_filter_fir <- 9
 
 # 
 custom_seq_interval = function(from, before, num_intervals){
@@ -114,6 +114,9 @@ custom_cyclic_convolution <- function(y1_dots, y2_dots){
 # FIR Filter
 ideal_filter_resolver <- function(dot){
   res <- foreach(x = dot) %dopar% {
+    if (x > div(N + 1, 2)){
+      x <- N - x
+    }
     if ((x >= left_filter_fir) & (x <= right_filter_fir)) {
       1
     }
