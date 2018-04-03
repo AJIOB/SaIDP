@@ -1,6 +1,7 @@
 # Made by IvAlex
 
 library("foreach")
+library("numbers")
 
 y <- function(x) {
   sin(3 * x) + cos(x) + sin(6 * x + 3)
@@ -12,7 +13,10 @@ custom_plot <- function(x, y, head_title) {
 }
 
 custom_freq_plot <- function(x, y, head_title) {
-  plot(x, y, type = "h", xlab = "x", ylab = "y", main = head_title)
+  len <- length(x)
+  n_right <- div(len + 1, 2)
+  new_x <- c(x[seq(1, n_right)], (x[seq(n_right + 1, len)] - len))
+  plot(new_x, y, type = "h", xlab = "x", ylab = "y", main = head_title)
   abline(h = 0, col = "gray60")
 }
 
