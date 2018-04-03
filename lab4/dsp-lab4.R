@@ -21,7 +21,7 @@ custom_freq_plot <- function(x, y, head_title) {
 }
 
 # Dots num
-N <- 16
+N <- 32
 
 #Period
 T <- 2 * pi
@@ -60,7 +60,10 @@ hidden_hamming_window_ <- function(n, N){
 # Hamming Window
 hamming_window <- function(dots){
   N_local <- length(dots)
-  res <- dots * hidden_hamming_window_(seq(0, N_local - 1), N_local)
+  window_xdots <- seq(0, N_local - 1)
+  window_ydots <- hidden_hamming_window_(window_xdots, N_local)
+  custom_plot(window_xdots, window_ydots, "Hamming window example")
+  res <- dots * window_ydots
   res
 }
 
