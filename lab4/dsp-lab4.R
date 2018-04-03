@@ -78,7 +78,7 @@ sort_index_gen <- function (arr, k){
   }
 }
   
-#БПФ с прореживанием по частоте
+#?????? ?? ?????????????????????????? ???? ??????????????
 fft_butterfly <- function(arr, dir){
   n <- length(arr)
   w <- 1
@@ -151,8 +151,54 @@ custom_plot(basic_xdots, Re(fir_filter$real$time), "FIR real timing")
 real_conv_ydots <- custom_cyclic_convolution(basic_ydots, fir_filter$real$time)
 custom_plot(basic_xdots, Re(real_conv_ydots), "Real FIR signal convolution")
 
-fft_ydots <- custom_fft(basic_ydots)
-#custom_freq_plot(basic_freq_xdots, Mod(fft_ydots), "FFT")
 
-ifft_ydots <- custom_ifft(fft_ydots)
-#custom_plot(basic_xdots, Re(ifft_ydots), "Inversed FFT")
+
+
+
+
+
+
+
+
+
+
+IIR_Dots <- c(0, c(basic_ydots))
+IIR_Dots
+
+
+b0 <- 0.9
+a0 <- (1 + b0) / 2
+a1 <- -1 * a0
+
+
+
+IIR_transformation <- function(x_dots, n, y_dots) {
+  if (n <= length(x_dots)) {
+    if (length(y_dots) == 0) {
+      y <- a0 * x_dots[n] + a1 * x_dots[n - 1] - 0
+      y_dots <- c(c(y_dots), y)
+      return (IIR_transformation(x_dots, n + 1, y_dots))
+    } else {
+      y <- a0 * x_dots[n] + a1 * x_dots[n - 1] + b0 * y_dots[length(y_dots)]
+      y_dots <- c(c(y_dots), y)
+      return (IIR_transformation(x_dots, n + 1, y_dots))
+    }
+  }
+  y_dots
+}
+
+
+
+wer <- IIR_transformation(IIR_Dots, 2, c())
+
+length(wer)
+length(basic_xdots)
+
+custom_plot(basic_xdots, wer, "IIR")
+custom_freq_plot(basic_freq_xdots, Mod(custom_fft(wer)), "wfwef")
+
+
+
+
+
+
