@@ -4,7 +4,9 @@ library("foreach")
 library("numbers")
 
 y <- function(x) {
-  sin(3 * x) + cos(x) + sin(6 * x + 3) + 7
+  sin(3 * x) + cos(x) + sin(6 * x + 3) + 1 + cos (15 * x) + sin (14 * x) + cos (13 * x) +
+    cos (12 * x) + cos (11 * x) + cos (10 * x) + cos (9 * x) + cos (8 * x) + cos (7 * x) + 
+    cos (5 * x) + cos (4 * x) + cos (2 * x)
 }
 
 custom_plot <- function(x, y, head_title) {
@@ -151,53 +153,8 @@ custom_plot(basic_xdots, Re(fir_filter$real$time), "FIR real timing")
 real_conv_ydots <- custom_cyclic_convolution(basic_ydots, fir_filter$real$time)
 custom_plot(basic_xdots, Re(real_conv_ydots), "Real FIR signal convolution")
 
-
-
-
-
-
-IIR_Dots <- c(0, c(basic_ydots))
-IIR_Dots
-
-
-b0 <- 0.9
-a0 <- (1 + b0) / 2
-a1 <- -1 * a0
-
-
-
-IIR_transformation <- function(x_dots, n, y_dots) {
-  if (n <= length(x_dots)) {
-    if (length(y_dots) == 0) {
-      y <- a0 * x_dots[n] + a1 * x_dots[n - 1] - 0
-      y_dots <- c(c(y_dots), y)
-      return (IIR_transformation(x_dots, n + 1, y_dots))
-    } else {
-      y <- a0 * x_dots[n] + a1 * x_dots[n - 1] + b0 * y_dots[length(y_dots)]
-      y_dots <- c(c(y_dots), y)
-      return (IIR_transformation(x_dots, n + 1, y_dots))
-    }
-  }
-  y_dots
-}
-
-
-
-wer <- IIR_transformation(IIR_Dots, 2, c())
-
-length(wer)
-length(basic_xdots)
-
-custom_plot(basic_xdots, wer, "IIR")
-custom_freq_plot(basic_freq_xdots, Mod(custom_fft(wer)), "wfwef")
-
-
-
-
-
-
 iir_AJIOB <- function(){
-  iir_b1 <- 0.9
+  iir_b1 <- 0.3
   iir_a0 <- (1 + iir_b1) / 2
   iir_a1 <- - iir_a0
   iir_iter <- 10
